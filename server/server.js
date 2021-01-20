@@ -1,5 +1,7 @@
 require('./config/config.js')
+
 const express = require('express')
+const mongoose = require('mongoose')
 const app = express()
 const bodyparser = require('body-parser')
 
@@ -9,35 +11,12 @@ app.use(bodyparser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyparser.json())
 
-app.get('/usuario', (req, res) => {
-    res.json('get usuario')
-})
+app.use(require('./routes/usuario.js'))
 
-app.post('/usuario', (req, res) => {
+mongoose.connect('mongodb://localhost:27017/cafe', (err, res) => {
+    if (err) throw err
 
-    let body = req.body
-
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
-        })
-    } else {
-        res.json({
-            persona: body
-        })
-    }
-})
-
-app.put('/usuario/:id', (req, res) => {
-    let id = req.params.id
-    res.json({
-        id
-    })
-})
-
-app.delete('/usuario', (req, res) => {
-    res.json('delete usuario')
+    console.log('Base de datos online')
 })
 
 app.listen(process.env.PORT, () => console.log('Listening...', process.env.PORT))
