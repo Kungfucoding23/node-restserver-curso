@@ -12,7 +12,9 @@ let Categoria = require('../models/categoria');
 app.get('/categoria', verificaToken, (req, res) => {
 
     Categoria.find({})
+        // ordena los resultados por descripcion
         .sort('descripcion')
+        //populate revisa que objectsid existen y los carga
         .populate('usuario', 'nombre email')
         .exec((err, categorias) => {
 
@@ -49,7 +51,7 @@ app.get('/categoria/:id', verificaToken, (req, res) => {
         }
 
         if (!categoriaDB) {
-            return res.status(500).json({
+            return res.status(400).json({
                 ok: false,
                 err: {
                     message: 'El ID no es correcto'
